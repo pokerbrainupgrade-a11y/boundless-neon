@@ -22,6 +22,8 @@ test.describe('Prenatal Mode', () => {
     await page.getByTestId('clearance-date').fill('2026-09-20');
     await page.goto('/boundless-neon/#/today');
     await page.getByTestId('card-main').getByTestId('start-session').first().click();
+    await expect(page.getByTestId('brief-page')).toBeVisible();
+    await page.getByTestId('brief-start').click();
     await expect(page.getByTestId('foundation-stepper')).toBeVisible();
     await expect(page.getByTestId('stop-if-chip')).toBeVisible();
     await page.getByTestId('stop-if-chip').click();
@@ -90,6 +92,7 @@ test.describe('Prenatal Mode', () => {
     const today = at(20, 0);
     await setup(page, { prenatalMode: true, dueDate: due, clearanceDate: '2026-09-01' }, today, `${today}T20:00:00Z`);
     await page.goto('/boundless-neon/#/session/B?day=1&slot=main&variant=seqA');
+    await page.getByTestId('brief-start').click();
     for (let i = 0; i < 9; i++) await page.getByTestId('rep-done').click(); // to exercise 4 (Internal Leg Tracing)
     await expect(page.getByTestId('foundation-stepper')).toHaveAttribute('data-index', '3');
     await expect(page.getByTestId('override-note')).toContainText('Side-lying or seated');

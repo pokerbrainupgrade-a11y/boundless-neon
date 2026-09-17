@@ -100,11 +100,16 @@ test.describe('timer presets (mocked clock)', () => {
 
   test('Steppers: foundation, mobility, decompression reach the log form', async ({ page }) => {
     await page.goto('/boundless-neon/#/session/B?day=1&slot=main&variant=seqA');
+    await expect(page.getByTestId('brief-page')).toBeVisible();
+    expect(await page.getByTestId('brief-exercise').count()).toBe(7);
+    await page.getByTestId('brief-start').click();
     const f = page.getByTestId('foundation-stepper');
     await expect(f).toBeVisible();
     for (let i = 0; i < 3; i++) await page.getByTestId('rep-done').click();
     await expect(f).toHaveAttribute('data-index', '1');
     await page.goto('/boundless-neon/#/session/E?day=3&slot=main');
+    expect(await page.getByTestId('brief-station').count()).toBe(15);
+    await page.getByTestId('brief-start').click();
     await expect(page.getByTestId('mobility-stepper')).toBeVisible();
     await page.getByLabel('plus one pass').click();
     await expect(page.getByTestId('passes')).toHaveText('1');

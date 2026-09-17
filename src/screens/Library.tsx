@@ -6,6 +6,8 @@ import { ctx } from '@/lib/store';
 import { allOverridesFor, overrideApplies, overrideIsSoft, overrideData } from '@/lib/prenatal';
 import { Pose } from '@/components/Pose';
 import { foundationView } from '@/components/Steppers';
+import { SessionBrief, sessionUrl, type BriefTarget } from '@/components/SessionBrief';
+import { dayN } from '@/lib/store';
 
 function OverrideRows({ ovs }: { ovs: Override[] }) {
   const c = ctx.value;
@@ -27,31 +29,35 @@ function OverrideRows({ ovs }: { ovs: Override[] }) {
   );
 }
 
+/** Where a session is scheduled: today's slot if it runs today, else its first scheduled day. */
+function scheduledTarget(id: string): BriefTarget {
+  const today = dayN.value;
+  const days = today !== null && today >= 1 && today <= 14 ? [program.days[today - 1]!, ...program.days] : program.days;
+  for (const d of days) {
+    for (const slot of ['am', 'main', 'pm'] as const) {
+      const ref = d[slot].find((r) => r.id === id);
+      if (ref) return { sessionId: id, day: d.n, slot, variant: ref.variant };
+    }
+  }
+  return { sessionId: id, day: today && today >= 1 && today <= 14 ? today : 1, slot: 'habit' };
+}
+
 function SessionDetail({ s }: { s: Session }) {
-  const c = ctx.value;
+  const t = scheduledTarget(s.id);
   const ovs = allOverridesFor(s.id);
-  const data = overrideData(s.id, c);
-  const name = typeof data.name === 'string' ? data.name : s.name;
+  const c = ctx.value;
   return (
-    <main class="screen" data-testid="session-detail">
-      <button type="button" class="btn btn-ghost" style="align-self:flex-start" onClick={() => navigate('/moves')}>← Moves</button>
-      <div class="row between">
-        <div><div class="section-h"><h1 style="font-size:1.3rem">{s.letter ? `${s.letter}. ` : ''}{name}</h1></div>{name !== s.name && <div class="muted small">Original: {s.name}</div>}</div>
-        <Pose id={s.drawingId} size={96} glow />
+    <main class="page" data-testid="session-detail">
+      <div class="sticky-head">
+        <button type="button" class="btn btn-ghost" onClick={() => navigate('/moves')}>‹ Moves</button>
+        <span class="title">{s.letter ? `${s.letter}. ` : ''}{s.short ?? s.name}</span>
       </div>
-      <p>{s.purpose}</p>
-      {ovs.length > 0 && <><h2>Prenatal version{c.on ? ' (active)' : ''}</h2><OverrideRows ovs={ovs} /></>}
-      <h2>Original cues</h2>
-      <ul>{s.cues.map((x) => <li key={x}>{x}</li>)}</ul>
-      {s.safety.length > 0 && <><h2>Safety</h2><ul>{s.safety.map((x) => <li key={x}>{x}</li>)}</ul></>}
-      {s.dose && <><h2>Dose</h2><p>{s.dose}</p></>}
-      {s.ch10System && <div class="muted small">System: {s.ch10System}</div>}
-      {s.id === 'A' && <><h2>Rotation</h2><p class="small">W1: {program.tabataRotation.w1.map((m) => program.tabataMovements.find((x) => x.id === m)!.name).join(' → ')}<br />W2: {program.tabataRotation.w2.map((m) => program.tabataMovements.find((x) => x.id === m)!.name).join(' → ')}</p></>}
-      {s.id === 'C' && <SevenMinuteList />}
-      {s.id === 'F' && <SuperSlowList />}
-      {s.id === 'E' && <StationList />}
-      {s.id === 'B' && <FoundationList />}
-      {s.id === 'decompression' && <ol>{program.foundation.breathing.cues.map((k) => <li key={k.name}><strong>{k.name}.</strong> {k.text}</li>)}</ol>}
+      <div class="content">
+        <SessionBrief target={t} />
+        {ovs.length > 0 && !c.on && <><h2>Prenatal version</h2><OverrideRows ovs={ovs} /></>}
+        {s.id === 'C' && !c.on && <SevenMinuteList />}
+      </div>
+      <div class="pinned-cta"><button type="button" class="btn btn-primary btn-xl btn-block" data-testid="brief-start" onClick={() => navigate(sessionUrl(t))}>START · Day {String(t.day).padStart(2, '0')}</button></div>
     </main>
   );
 }
@@ -71,18 +77,6 @@ function FoundationDetail({ ex }: { ex: FoundationExercise }) {
   );
 }
 
-function FoundationList() {
-  return (
-    <div class="stack">
-      <h2>Sequence A · D1/D3/D5</h2>
-      {program.foundation.seqA.map((e, i) => <ExRow key={e.id} n={i + 1} ex={e} />)}
-      <h2>Sequence B · D2/D4/D6</h2>
-      {program.foundation.seqB.map((e, i) => <ExRow key={e.id} n={i + 1} ex={e} />)}
-      <div class="card small"><strong>Day 7.</strong> {program.foundation.day7}</div>
-      <div class="card small"><strong>As the warm-up.</strong> {program.foundation.asWarmup}</div>
-    </div>
-  );
-}
 function ExRow({ n, ex }: { n: number; ex: FoundationExercise }) {
   const v = foundationView(ex);
   return (

@@ -155,15 +155,17 @@ export function TimerRunner(p: TimerRunnerProps) {
       </div>
 
       {st.status === 'idle' ? (
-        <div class="stack grow" style="justify-content:center">
-          {p.preStart}
-          <div class="card">
-            <div class="muted small">Plan</div>
-            <div style="font-family:var(--font-timer);font-size:1.4rem">{fmtClock(p.built.totalMs)}{p.built.segments.some((s) => s.open) ? ' +' : ''}</div>
-            <div class="muted small">{p.built.segments.length} segments · lead-in {settings.value.leadInSec} s</div>
+        <>
+          <div class="stack grow" data-testid="setup-scroll">
+            <div class="card">
+              <div class="muted small">Plan</div>
+              <div style="font-family:var(--font-timer);font-size:1.4rem">{fmtClock(p.built.totalMs)}{p.built.segments.some((s) => s.open) ? ' +' : ''}</div>
+              <div class="muted small">{p.built.segments.length} segments · lead-in {settings.value.leadInSec} s</div>
+            </div>
+            {p.preStart}
           </div>
-          <button type="button" class="btn btn-primary btn-xl btn-block" data-testid="start" onClick={start}>START</button>
-        </div>
+          <div class="pinned-cta"><button type="button" class="btn btn-primary btn-xl btn-block" data-testid="start" onClick={start}>START</button></div>
+        </>
       ) : st.status === 'done' ? (
         <div class="stack grow fade-in" style="justify-content:center;align-items:center">
           <div class="timer-state" style="color:var(--lime);font-size:2rem">YOU CRUSHED IT</div>

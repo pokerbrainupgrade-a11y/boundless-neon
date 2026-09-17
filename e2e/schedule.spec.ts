@@ -47,7 +47,14 @@ test.describe('schedule and Phoenix day math', () => {
     await expect(page.getByTestId('day-13')).toContainText('H');
     await page.getByTestId('day-13').click();
     await expect(page.getByTestId('day-preview')).toContainText('5x4 VO2 max');
-    await page.getByRole('button', { name: 'Close' }).click();
+    await expect(page.getByTestId('day-preview')).toHaveAttribute('data-day', '13');
+    await page.getByTestId('day-next').click();
+    await expect(page.getByTestId('day-preview')).toHaveAttribute('data-day', '14');
+    await expect(page.getByTestId('day-preview')).toContainText('Stamina');
+    await page.getByTestId('day-prev').click();
+    await expect(page.getByTestId('day-preview')).toHaveAttribute('data-day', '13');
+    await page.getByTestId('day-close').click();
+    await expect(page).toHaveURL(/#\/schedule$/);
     await page.getByRole('button', { name: 'Edit start date' }).click();
     await page.getByTestId('edit-start-input').fill('2026-09-28');
     await page.getByTestId('edit-start-save').click();

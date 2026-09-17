@@ -1,10 +1,10 @@
 import { useState } from 'preact/hooks';
+import { navigate } from '@/router';
 import { program, getDay } from '@/data/program';
 import { block, dayN, dateOfDay, setStartDate, shiftRemaining, startBlock, blockLabel, logsFor, todayYmd } from '@/lib/store';
 import { resolveSession } from '@/lib/prenatal';
 import { ctx } from '@/lib/store';
 import { fmtShortDate } from '@/lib/time';
-import { SessionRow } from '@/components/SessionRow';
 
 function letters(n: number): string {
   const d = getDay(n);
@@ -23,7 +23,6 @@ function letters(n: number): string {
 export function Schedule() {
   const b = block.value;
   const cur = dayN.value;
-  const [preview, setPreview] = useState<number | null>(null);
   const [editStart, setEditStart] = useState(false);
   const [date, setDate] = useState(b?.startDate ?? todayYmd.value);
   const [nextDate, setNextDate] = useState(todayYmd.value);
@@ -35,7 +34,7 @@ export function Schedule() {
     const isToday = cur === n;
     const past = cur !== null && n < cur;
     return (
-      <button type="button" key={n} class={`daycell ${isToday ? 'today' : ''} ${past ? 'past' : ''}`} onClick={() => setPreview(n)} data-testid={`day-${n}`} aria-label={`Day ${n}`}>
+      <button type="button" key={n} class={`daycell ${isToday ? 'today' : ''} ${past ? 'past' : ''}`} onClick={() => navigate(`/schedule/${n}`)} data-testid={`day-${n}`} aria-label={`Day ${n}`}>
         <div class="row between"><span class="d">D{String(d.day).padStart(2, '0')}</span><span class={`chip ${cls}`} style="font-size:0.55rem;padding:1px 6px">{d.load.split(' ')[0]}</span></div>
         <span class="s">{b ? fmtShortDate(dateOfDay(n)!) : `Day ${n}`}</span>
         <span class="s">{letters(n)}</span>
@@ -78,17 +77,6 @@ export function Schedule() {
         <p class="small muted">{program.meta.orderWithinDay}</p>
       </div>
 
-      {preview !== null && (
-        <div class="modal-bg" onClick={() => setPreview(null)}>
-          <div class="modal stack" role="dialog" aria-label={`Day ${preview}`} onClick={(e) => e.stopPropagation()} data-testid="day-preview">
-            <div class="row between"><h2>Day {String(preview).padStart(2, '0')} · W{getDay(preview).week} D{getDay(preview).day}</h2><button type="button" class="btn btn-ghost" onClick={() => setPreview(null)}>Close</button></div>
-            <div class="muted small">{getDay(preview).load} · {getDay(preview).timeEstimate}{b ? ` · ${fmtShortDate(dateOfDay(preview)!)}` : ''}</div>
-            <h3>Warm-up</h3>{getDay(preview).am.map((r, i) => <SessionRow key={i} r={r} day={preview} slot="am" compact />)}
-            <h3>Main set</h3>{getDay(preview).main.map((r, i) => <SessionRow key={i} r={r} day={preview} slot="main" compact />)}
-            <h3>Cool-down</h3>{getDay(preview).pm.length ? getDay(preview).pm.map((r, i) => <SessionRow key={i} r={r} day={preview} slot="pm" compact />) : <div class="muted small">—</div>}
-          </div>
-        </div>
-      )}
     </main>
   );
 }

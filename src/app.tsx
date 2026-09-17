@@ -8,6 +8,8 @@ import { Progress } from '@/screens/Progress';
 import { Settings } from '@/screens/Settings';
 import { DevPoses } from '@/screens/DevPoses';
 import { Session } from '@/screens/Session';
+import { Brief } from '@/screens/Brief';
+import { DayPage } from '@/screens/DayPage';
 import { FlashOverlay } from '@/components/Flash';
 import { booted } from '@/lib/store';
 import { settings } from '@/lib/settings';
@@ -19,13 +21,14 @@ export function App() {
   let screen;
   let tabs = true;
   switch (top) {
-    case 'schedule': screen = <Schedule />; break;
-    case 'moves': screen = <Library />; break;
+    case 'schedule': if (r.parts[1]) { screen = <DayPage />; tabs = false; } else screen = <Schedule />; break;
+    case 'brief': screen = <Brief />; tabs = false; break;
+    case 'moves': screen = <Library />; if (r.parts[1] && r.parts[1] !== 'prenatal' && r.parts[1] !== 'reference') tabs = false; break;
     case 'journal': screen = <Journal />; break;
     case 'progress': screen = <Progress />; break;
     case 'settings': screen = <Settings />; break;
     case 'dev': screen = <DevPoses />; tabs = false; break;
-    case 'session': screen = <Session />; tabs = false; break;
+    case 'session': screen = <Session key={r.path + r.query.toString()} />; tabs = false; break;
     case 'today':
     default: screen = <Today />;
   }

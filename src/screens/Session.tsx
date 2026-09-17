@@ -15,6 +15,7 @@ import { FoundationStepper, MobilityStepper, DecompressionPacer, type StepperRes
 import { Pose } from '@/components/Pose';
 import { BoxBreath } from '@/components/BreathPacer';
 import { flash } from '@/components/Flash';
+import { SessionBrief, BriefPage, type BriefTarget } from '@/components/SessionBrief';
 import { chime, tickBeep } from '@/lib/audio';
 import { fmtClock } from '@/lib/engine';
 
@@ -31,6 +32,7 @@ export function Session() {
   const resolved = resolveSession(sessionId, c);
   const [phase, setPhase] = useState<Phase>({ kind: 'setup' });
   const [ack, setAck] = useState(false);
+  const [briefSeen, setBriefSeen] = useState(false);
 
   if (!resolved) {
     const original = program.sessions[sessionId];
@@ -89,6 +91,10 @@ export function Session() {
   const abort = () => navigate('/today', true);
   const preset: TimerPreset = session.timerPreset;
 
+  const target: BriefTarget = { sessionId: original.id, day, slot, variant };
+  if ((preset === 'foundation' || preset === 'mobility') && !briefSeen) {
+    return <BriefPage target={target} title={`${session.short ?? session.name} · Day ${String(day).padStart(2, '0')}`} onStart={() => setBriefSeen(true)} onClose={abort} />;
+  }
   if (preset === 'foundation') {
     const v = (variant === 'seqA' || variant === 'seqB' || variant === 'applied' ? variant : dayObj.foundation === 'A' ? 'seqA' : dayObj.foundation === 'B' ? 'seqB' : 'applied') as 'seqA' | 'seqB' | 'applied';
     return <FoundationStepper variant={v} onDone={onStepper} onAbort={abort} />;
@@ -96,13 +102,13 @@ export function Session() {
   if (preset === 'mobility') return <MobilityStepper onDone={onStepper} onAbort={abort} />;
   if (preset === 'decompression') return <DecompressionPacer title={session.name} onDone={onStepper} onAbort={abort} />;
 
-  return <IntervalSession key={session.id + variant} session={session} original={original} week={week} variant={variant} preStartNotes={resolved.preStart} onDone={(res, data, note) => setPhase({ kind: 'log', draft: draft(res, data), note })} onAbort={abort} />;
+  return <IntervalSession key={session.id + variant} session={session} original={original} week={week} variant={variant} target={target} preStartNotes={resolved.preStart} onDone={(res, data, note) => setPhase({ kind: 'log', draft: draft(res, data), note })} onAbort={abort} />;
 }
 
 /* ---------------- interval presets ---------------- */
 
-function IntervalSession({ session, original, week, variant, preStartNotes, onDone, onAbort }: {
-  session: SessionT; original: SessionT; week: 1 | 2; variant?: string; preStartNotes: string | null;
+function IntervalSession({ session, original, week, variant, target, preStartNotes, onDone, onAbort }: {
+  session: SessionT; original: SessionT; week: 1 | 2; variant?: string; target: BriefTarget; preStartNotes: string | null;
   onDone: (r: RunResult, data: Record<string, unknown>, note?: string) => void; onAbort: () => void;
 }) {
   const c = ctx.value;
@@ -181,7 +187,7 @@ function IntervalSession({ session, original, week, variant, preStartNotes, onDo
       {preset === 'swim' && !built.meta.continuous && (
         <MinutesPicker label="Rounds" value={opts.swimRounds!} min={10} max={12} step={1} onChange={(v) => setOpts({ ...opts, swimRounds: v })} />
       )}
-      {session.safety.length > 0 && <details><summary class="muted small">Safety notes</summary><ul class="small">{session.safety.map((x) => <li key={x}>{x}</li>)}</ul></details>}
+      <div style="border-top:1px solid var(--surface-2);padding-top:12px"><SessionBrief target={{ ...target, variant: preset === 'tabata' ? opts.tabataMove : target.variant }} /></div>
     </div>
   );
 

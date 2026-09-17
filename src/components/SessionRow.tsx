@@ -6,6 +6,7 @@ import { tabataMoves } from '@/lib/presets';
 import { ctx, logsFor } from '@/lib/store';
 import { settings } from '@/lib/settings';
 import { Pose } from './Pose';
+import { briefUrl } from './SessionBrief';
 
 /** One scheduled session inside a Today/Schedule card. */
 export function SessionRow({ r, day, slot, compact = false }: { r: SessionRef; day: number; slot: 'am' | 'main' | 'pm'; compact?: boolean }) {
@@ -34,13 +35,16 @@ export function SessionRow({ r, day, slot, compact = false }: { r: SessionRef; d
   const tabataName = r.id === 'A' && r.variant ? (allowed.find((m) => m.id === r.variant) ?? allowed[0])?.name : undefined;
   const variantLabel = r.id === 'A' && r.variant ? tabataName : r.id === 'B' && r.variant ? (r.variant === 'seqA' ? 'Seq A' : r.variant === 'seqB' ? 'Seq B' : 'Applied') : undefined;
   const url = `/session/${r.id}?day=${day}&slot=${slot}${r.variant ? `&variant=${r.variant}` : ''}`;
+  const brief = briefUrl({ sessionId: r.id, day, slot, variant: r.variant });
   return (
     <div class={`row between ${done ? 'done' : ''}`} data-testid="session-row" data-session={r.id} data-ran={res.session.id} data-done={done} style="min-height:var(--tap);gap:10px">
+      <a href={`#${brief}`} class="view-link" data-testid="view-brief" aria-label={`View ${name}`}>
       {!compact && <Pose id={res.session.drawingId} size={44} />}
       <div class="grow" style="min-width:0">
-        <div style="font-weight:600">{res.replaced ? <><s class="muted">{original.short ?? original.name}</s> → </> : null}{name}{variantLabel ? <span class="muted"> · {variantLabel}</span> : null}</div>
+        <div class="name">{res.replaced ? <><s class="muted">{original.short ?? original.name}</s> → </> : null}{name}{variantLabel ? <span class="muted"> · {variantLabel}</span> : null}</div>
         <div class="muted small">{res.overrides.length && !res.replaced ? `Prenatal: ${res.overrides[res.overrides.length - 1]!.replacement.slice(0, 90)}${res.overrides[res.overrides.length - 1]!.replacement.length > 90 ? '…' : ''}` : r.note}{r.optional ? ' · optional' : ''}</div>
       </div>
+      </a>
       <button type="button" class={`btn ${done ? 'btn-lime' : 'btn-primary'}`} data-testid="start-session" onClick={() => navigate(url)} aria-label={`${done ? 'Redo' : 'Start'} ${name}`}>{done ? '✓ Again' : 'Start'}</button>
     </div>
   );
