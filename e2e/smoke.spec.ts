@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { setup } from './helpers';
 
 const tabs = ['today', 'schedule', 'moves', 'journal', 'progress', 'settings'];
 
@@ -7,6 +8,7 @@ test.describe('smoke', () => {
     test(`loads #/${tab} at the base path`, async ({ page }) => {
       const errors: string[] = [];
       page.on('pageerror', (e) => errors.push(String(e)));
+      await setup(page, { prenatalMode: true });
       await page.goto(`/boundless-neon/#/${tab}`);
       await expect(page.locator('main')).toBeVisible();
       await expect(page.locator('nav.tabbar')).toBeVisible();

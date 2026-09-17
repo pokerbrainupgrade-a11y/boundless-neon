@@ -58,8 +58,7 @@ export function FoundationStepper({ variant, onDone, onAbort }: { variant: 'seqA
   if (variant === 'applied') {
     return (
       <div class="screen-full grid-bg">
-        <StopIfChip />
-        <div class="row between"><div class="wordmark" style="font-size:1rem">Foundation · applied</div><button type="button" class="btn btn-ghost" onClick={onAbort}>Back</button></div>
+        <div class="row between"><div class="wordmark grow" style="font-size:1rem">Foundation · applied</div><StopIfChip /><button type="button" class="btn btn-ghost" onClick={onAbort}>Back</button></div>
         <div class="stack grow" style="justify-content:center">
           <div class="card stack">
             <h3>Day 7 is applied, not trained</h3>
@@ -97,9 +96,9 @@ export function FoundationStepper({ variant, onDone, onAbort }: { variant: 'seqA
 
   return (
     <div class="screen-full grid-bg" data-testid="foundation-stepper" data-index={i} data-rep={rep}>
-      <StopIfChip />
       <div class="row between">
-        <div><div class="wordmark" style="font-size:1rem">Foundation {sequence}</div><div class="muted small">{i + 1} / {total}</div></div>
+        <div class="grow"><div class="wordmark" style="font-size:1rem">Foundation {sequence}</div><div class="muted small">{i + 1} / {total}</div></div>
+        <StopIfChip />
         <button type="button" class="btn btn-ghost" onClick={() => finish(false)}>End</button>
       </div>
       <div class="stack grow" style="gap:10px;overflow-y:auto">
@@ -162,9 +161,9 @@ export function MobilityStepper({ onDone, onAbort }: { onDone: (r: StepperResult
   void tabataMovements;
   return (
     <div class="screen-full grid-bg" data-testid="mobility-stepper" data-index={i}>
-      <StopIfChip />
       <div class="row between">
-        <div><div class="wordmark" style="font-size:1rem">Metabolic Mobility</div><div class="muted small">Station {st.n} / 15</div></div>
+        <div class="grow"><div class="wordmark" style="font-size:1rem">Metabolic Mobility</div><div class="muted small">Station {st.n} / 15</div></div>
+        <StopIfChip />
         <button type="button" class="btn btn-ghost" onClick={() => (i === 0 && passes === 0 ? onAbort() : finish(false, i))}>End</button>
       </div>
       <div class="stack grow" style="justify-content:space-between">
@@ -205,8 +204,7 @@ export function DecompressionPacer({ onDone, onAbort, title = 'Decompression Bre
   const finish = (n: number) => onDone({ startedAt, endedAt: new Date().toISOString(), completed: n >= 3, data: { reps: n } });
   return (
     <div class="screen-full grid-bg" data-testid="decompression" data-rep={rep}>
-      <StopIfChip />
-      <div class="row between"><div class="wordmark" style="font-size:1rem">{title}</div><button type="button" class="btn btn-ghost" onClick={() => (rep === 0 ? onAbort() : finish(rep))}>End</button></div>
+      <div class="row between"><div class="wordmark grow" style="font-size:1rem">{title}</div><StopIfChip /><button type="button" class="btn btn-ghost" onClick={() => (rep === 0 ? onAbort() : finish(rep))}>End</button></div>
       <div class="stack grow" style="justify-content:space-between;overflow-y:auto">
         <div class="row between"><span class="chip chip-cyan">REP {Math.min(rep + 1, 3)} / 3</span><span class="muted small">{settings.value.displayName ? `Go ${settings.value.displayName}` : ''}</span></div>
         {running ? <BreathRing /> : (

@@ -18,4 +18,5 @@ void boot();
 import { db } from './lib/db';
 import { updateSettings, settings } from './lib/settings';
 import { startBlock, reloadBlocks, reloadLogs } from './lib/store';
-(window as unknown as { __bneon: unknown }).__bneon = { db, updateSettings, settings, startBlock, reloadBlocks, reloadLogs };
+import { applyImport } from './lib/exportImport';
+(window as unknown as { __bneon: unknown }).__bneon = { db, updateSettings, settings, startBlock, reloadBlocks, reloadLogs, applyImport };

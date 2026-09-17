@@ -3,7 +3,7 @@ import type { ComponentChildren } from 'preact';
 import { route, navigate } from '@/router';
 import { program, getDay } from '@/data/program';
 import type { Session as SessionT, TimerPreset } from '@/data/schema';
-import { resolveSession } from '@/lib/prenatal';
+import { resolveSession, overrideData } from '@/lib/prenatal';
 import { buildPreset, tabataMoves, superSlowOptions, type PresetOptions } from '@/lib/presets';
 import { ctx, dayN, block, todayYmd } from '@/lib/store';
 import { settings, hrMax } from '@/lib/settings';
@@ -121,7 +121,7 @@ function IntervalSession({ session, original, week, variant, preStartNotes, onDo
     tabataMove: allowedMoves.some((m) => m.id === defaultMove) ? defaultMove : allowedMoves[0]!.id,
     sevenRounds: 2,
     sprintVariant: 'G1',
-    minutes: session.defaultMinutes ?? (preset === 'stamina' ? (c.on ? 45 : 120) : 20),
+    minutes: preset === 'stamina' ? (c.on ? Number(overrideData('L', c).defaultMinutes ?? 45) : 120) : (session.defaultMinutes ?? 20),
     cycles: 2,
     restSec: 90,
     swimRounds: 10,
@@ -196,7 +196,7 @@ function IntervalSession({ session, original, week, variant, preStartNotes, onDo
       return (
         <div class="card stack" data-testid="round-log">
           <div class="muted small">Round {round} · {String(built.meta.unit)}</div>
-          <div class="row between">
+          <div class="row between wrap">
             <div class="stepper">
               <button type="button" class="btn" onClick={() => setR(v - 1)} aria-label="minus one">−</button>
               <span class="val" data-testid="round-val">{v}</span>

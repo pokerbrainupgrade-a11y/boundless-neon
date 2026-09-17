@@ -141,12 +141,12 @@ export function TimerRunner(p: TimerRunnerProps) {
 
   return (
     <div class="screen-full grid-bg" data-testid="timer" data-status={st.status} data-index={st.index} data-segments={p.built.segments.length} data-total-ms={p.built.totalMs} data-kind={kind}>
-      <StopIfChip />
       <div class="row between" style="margin-bottom:6px">
-        <div>
+        <div class="grow" style="min-width:0">
           <div class="wordmark" style="font-size:1rem">{p.title}</div>
           {p.subtitle && <div class="muted small">{p.subtitle}</div>}
         </div>
+        <StopIfChip />
         {st.status !== 'done' && (
           <button type="button" class="btn btn-ghost" onClick={() => (st.status === 'idle' ? p.onAbort() : (engine.end(), finish()))}>
             {st.status === 'idle' ? 'Back' : 'End'}

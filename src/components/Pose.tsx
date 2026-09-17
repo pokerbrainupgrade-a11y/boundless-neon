@@ -23,7 +23,7 @@ function PropEl({ p }: { p: Prop }) {
     case 'tub': return <path d={`M${p.x} ${p.y - 20} L${p.x + 4} ${p.y} L${p.x + p.w - 4} ${p.y} L${p.x + p.w} ${p.y - 20}`} />;
     case 'water': return <path d={`M8 ${p.y} q6 -3 12 0 t12 0 t12 0 t12 0 t12 0 t12 0 t12 0`} stroke="var(--cyan)" opacity="0.8" />;
     case 'pillow': return <rect x={p.x - 8} y={p.y - 3} width="16" height="6" rx="3" transform={p.angle ? `rotate(${p.angle} ${p.x} ${p.y})` : undefined} />;
-    case 'rope': return <path d={`M${p.x - 18} ${p.y - 30} q18 40 36 0`} />;
+    case 'rope': { const hw = (p.w ?? 36) / 2; const h = p.h ?? 30; return <path d={`M${p.x - hw} ${p.y - h} q${hw} ${(h * 4) / 3} ${hw * 2} 0`} />; }
     case 'pad': return <line x1={p.x} y1={p.y} x2={p.x + p.w} y2={p.y} stroke-width="4" opacity="0.5" />;
     case 'cable': return <line x1={p.x} y1={p.y} x2={p.toX} y2={p.toY} stroke-dasharray="2 2" />;
     case 'arrow': return <g transform={`translate(${p.x} ${p.y}) rotate(${p.angle})`}><line x1="-6" y1="0" x2="6" y2="0" /><polyline points="2,-4 6,0 2,4" /></g>;

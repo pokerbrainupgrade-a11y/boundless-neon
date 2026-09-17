@@ -10,6 +10,8 @@ import { DevPoses } from '@/screens/DevPoses';
 import { Session } from '@/screens/Session';
 import { FlashOverlay } from '@/components/Flash';
 import { booted } from '@/lib/store';
+import { settings } from '@/lib/settings';
+import { FirstLaunch } from '@/screens/FirstLaunch';
 
 export function App() {
   const r = route.value;
@@ -27,6 +29,8 @@ export function App() {
     case 'today':
     default: screen = <Today />;
   }
+  const st = settings.value;
+  if (booted.value && st.prenatalMode && !st.firstLaunchDone && top !== 'dev') return <FirstLaunch />;
   if (!booted.value) return <main class="screen" aria-busy="true"><div class="wordmark">BOUNDLESS NEON</div></main>;
   return (
     <>

@@ -12,7 +12,8 @@ export interface TestSettings {
 }
 
 /** Load the app, apply settings through the debug hook, and start a block if asked. */
-export async function setup(page: Page, s: TestSettings = {}, startDate?: string) {
+export async function setup(page: Page, s: TestSettings = {}, startDate?: string, time?: Date | string) {
+  if (time) await page.clock.install({ time: typeof time === 'string' ? new Date(time) : time });
   await page.goto('/boundless-neon/#/settings');
   await page.waitForFunction(() => !!(window as unknown as { __bneon?: unknown }).__bneon);
   await page.evaluate(async ({ s, startDate }) => {

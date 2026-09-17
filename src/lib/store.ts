@@ -1,7 +1,7 @@
 import { signal, computed } from '@preact/signals';
 import { db, requestPersistentStorage, type Block, type SessionLog, type HabitLog, type Vital } from './db';
 import { settings, loadSettings } from './settings';
-import { phxDate, dayIndex, dateForDay } from './time';
+import { phxDate, phxHour, dayIndex, dateForDay } from './time';
 import { prenatalContext } from './prenatal';
 
 export const todayYmd = signal(phxDate());
@@ -78,6 +78,16 @@ export async function shiftRemaining(by = 1): Promise<void> {
 
 export async function saveLog(log: SessionLog): Promise<number> {
   const id = (await db.logs.put(log)) as number;
+  // Keep the daily habit checklist in sync with logged protocols.
+  const ts = Date.parse(log.startedAt);
+  const date = phxDate(isNaN(ts) ? Date.now() : ts);
+  if (log.completed && block.value && !isNaN(ts)) {
+    if (log.sessionId === 'decompression') {
+      const h = phxHour(Date.parse(log.startedAt));
+      await setHabit(h < 12 ? 'breathWake' : h < 18 ? 'breathAfternoon' : 'breathBed', true, date);
+    } else if (log.sessionId === 'coldShower') await setHabit('coldShower', true, date);
+    else if (log.sessionId === 'postMealWalk') await setHabit('postMealWalk', true, date);
+  }
   await reloadLogs();
   return id;
 }

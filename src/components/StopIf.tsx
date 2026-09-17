@@ -20,7 +20,7 @@ export function StopIfChip() {
   return (
     <>
       <button type="button" class="btn chip-caution" data-testid="stop-if-chip" onClick={() => setOpen(true)}
-        style="position:fixed;top:calc(var(--safe-top) + 10px);right:12px;z-index:30;min-height:var(--tap);border-radius:999px;background:var(--caution);color:var(--ink);font-weight:700;padding:8px 14px;gap:6px">
+        style="min-height:var(--tap);border-radius:999px;background:var(--caution);color:var(--ink);font-weight:700;padding:8px 14px;gap:6px;flex:none">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 3l10 18H2z M12 10v5 M12 18v.5" /></svg>
         Stop if…
       </button>
