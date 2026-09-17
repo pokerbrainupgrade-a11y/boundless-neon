@@ -10,7 +10,7 @@ await page.screenshot({ path: `${out}/01-first-launch.png`, fullPage: true });
 await page.getByTestId('cleared-btn').click();
 await page.getByTestId('clearance-save').click();
 await page.waitForSelector('[data-testid="start-date-card"]');
-await page.evaluate(async () => { const h = (window as any).__bneon; await h.updateSettings({ dueDate: '2027-05-15', age: 34, providerLimits: 'Keep HR under 150. No lifting over 25 lb.' }); await h.startBlock('2026-09-21'); });
+await page.evaluate(async () => { const h = (window as any).__bneon; await h.updateSettings({ dueDate: '2027-09-03', age: 30, providerLimits: 'Example: keep it conversational.' }); await h.startBlock('2026-09-21'); });
 await page.waitForSelector('[data-testid="today"]');
 await page.screenshot({ path: `${out}/02-today.png`, fullPage: true });
 await page.goto('http://localhost:4173/boundless-neon/#/schedule');

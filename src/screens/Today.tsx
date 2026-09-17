@@ -101,7 +101,7 @@ export function Today() {
       </section>
       <section class="card stack" data-testid="card-main">
         <Zigzag class="tr" />
-        <div class="row between"><h3>MAIN SET</h3><span class="chip chip-purple" data-testid="foundation-badge">Foundation {fnd} · {day.foundationMode}</span></div>
+        <div class="row between"><h3>MAIN SET</h3><span class="chip chip-purple" data-testid="foundation-badge">Foundation {day.foundation === 'applied' ? 'applied day' : `${fnd} · ${day.foundationMode}`}</span></div>
         {day.main.map((r, i) => <SessionRow key={i} r={r} day={n!} slot="main" />)}
       </section>
       <section class="card stack" data-testid="card-pm">

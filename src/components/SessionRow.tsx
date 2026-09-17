@@ -39,7 +39,7 @@ export function SessionRow({ r, day, slot, compact = false }: { r: SessionRef; d
       {!compact && <Pose id={res.session.drawingId} size={44} />}
       <div class="grow" style="min-width:0">
         <div style="font-weight:600">{res.replaced ? <><s class="muted">{original.short ?? original.name}</s> → </> : null}{name}{variantLabel ? <span class="muted"> · {variantLabel}</span> : null}</div>
-        <div class="muted small">{r.note}{r.optional ? ' · optional' : ''}{res.overrides.length && !res.replaced ? ' · prenatal-modified' : ''}</div>
+        <div class="muted small">{res.overrides.length && !res.replaced ? `Prenatal: ${res.overrides[res.overrides.length - 1]!.replacement.slice(0, 90)}${res.overrides[res.overrides.length - 1]!.replacement.length > 90 ? '…' : ''}` : r.note}{r.optional ? ' · optional' : ''}</div>
       </div>
       <button type="button" class={`btn ${done ? 'btn-lime' : 'btn-primary'}`} data-testid="start-session" onClick={() => navigate(url)} aria-label={`${done ? 'Redo' : 'Start'} ${name}`}>{done ? '✓ Again' : 'Start'}</button>
     </div>

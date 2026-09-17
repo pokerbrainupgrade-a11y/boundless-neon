@@ -70,6 +70,7 @@ test.describe('Prenatal Mode', () => {
     await expect(pm).toHaveAttribute('data-session', 'I');
     await expect(pm).toHaveAttribute('data-ran', 'coolStretch');
     await expect(page.getByTestId('provider-limits')).toBeVisible();
+    await page.addStyleTag({ content: '.tabbar{display:none}' });
     await page.screenshot({ path: 'test-results/walk-w1d5.png', fullPage: true });
     await page.clock.setSystemTime(new Date(`${addDays(today, 13)}T20:00:00Z`));
     await page.reload();
@@ -77,6 +78,7 @@ test.describe('Prenatal Mode', () => {
     const am = page.getByTestId('card-am').getByTestId('session-row').first();
     await expect(am).toHaveAttribute('data-session', 'L');
     await expect(page.getByTestId('card-pm').getByTestId('session-row').first()).toHaveAttribute('data-ran', 'lukewarmShower');
+    await page.addStyleTag({ content: '.tabbar{display:none}' });
     await page.screenshot({ path: 'test-results/walk-w2d7.png', fullPage: true });
     // The stamina session in T2 is capped to 60 min and fueled
     await am.getByTestId('start-session').click();
