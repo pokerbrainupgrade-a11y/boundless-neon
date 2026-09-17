@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { setup } from './helpers';
 import { addDays } from '../src/lib/time';
 
-const due = '2027-05-15';
+const due = '2027-09-03';
 const at = (w: number, d: number) => addDays(due, -(280 - (w * 7 + d)));
 const CONTRA = ['I', 'J', 'coldImmersion', 'G'];
 

@@ -3,7 +3,7 @@ import { gestationalWeek, trimesterForWeek, trimester, prenatalContext, resolveS
 import { addDays } from '@/lib/time';
 import { program, allTargetIds, foundationExercises } from '@/data/program';
 
-const due = '2027-05-15';
+const due = '2027-09-03';
 /** today such that gestational age is w weeks d days */
 const at = (w: number, d: number) => addDays(due, -(280 - (w * 7 + d)));
 
