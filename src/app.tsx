@@ -6,6 +6,10 @@ import { Library } from '@/screens/Library';
 import { Journal } from '@/screens/Journal';
 import { Progress } from '@/screens/Progress';
 import { Settings } from '@/screens/Settings';
+import { DevPoses } from '@/screens/DevPoses';
+import { Session } from '@/screens/Session';
+import { FlashOverlay } from '@/components/Flash';
+import { booted } from '@/lib/store';
 
 export function App() {
   const r = route.value;
@@ -18,11 +22,15 @@ export function App() {
     case 'journal': screen = <Journal />; break;
     case 'progress': screen = <Progress />; break;
     case 'settings': screen = <Settings />; break;
+    case 'dev': screen = <DevPoses />; tabs = false; break;
+    case 'session': screen = <Session />; tabs = false; break;
     case 'today':
     default: screen = <Today />;
   }
+  if (!booted.value) return <main class="screen" aria-busy="true"><div class="wordmark">BOUNDLESS NEON</div></main>;
   return (
     <>
+      <FlashOverlay />
       {screen}
       {tabs && <TabBar />}
     </>
