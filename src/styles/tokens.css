@@ -1,4 +1,5 @@
 :root {
+  color-scheme: dark;
   --bg: #140A26;
   --surface: #1F1238;
   --surface-2: #2A1A4A;
@@ -11,7 +12,23 @@
   --text: #F5F0FF;
   --muted: #B9A8D9;
   --caution: #FF6B6B;
+  /* text drawn on top of bright chips and primary buttons */
   --ink: #140A26;
+
+  /* translucent surfaces derived from the palette */
+  --tabbar-bg: rgba(20, 10, 38, 0.92);
+  --overlay: rgba(8, 3, 18, 0.8);
+  --grid-a: rgba(0, 229, 255, 0.10);
+  --grid-b: rgba(255, 46, 151, 0.10);
+  --glow-pink: 0 0 18px rgba(255, 46, 151, 0.55);
+  --glow-cyan: 0 0 18px rgba(0, 229, 255, 0.55);
+  --glow-text-pink: 0 0 24px rgba(255, 46, 151, 0.55);
+  --glow-text-cyan: 0 0 24px rgba(0, 229, 255, 0.55);
+  --glow-text-yellow: 0 0 24px rgba(255, 210, 63, 0.45);
+  --glow-text-lime: 0 0 24px rgba(198, 255, 26, 0.45);
+  --pose-glow: drop-shadow(0 0 6px rgba(0, 229, 255, 0.7));
+  --gradient-sunset: linear-gradient(90deg, var(--pink), var(--purple), var(--cyan));
+  --gradient-border: linear-gradient(135deg, rgba(255, 46, 151, 0.7), rgba(139, 92, 246, 0.5), rgba(0, 229, 255, 0.7));
 
   --font-display: 'Bungee', 'Impact', sans-serif;
   --font-timer: 'Orbitron', 'Menlo', monospace;
@@ -25,13 +42,88 @@
   --pad: 16px;
   --ease: cubic-bezier(0.34, 1.56, 0.64, 1);
   --dur: 200ms;
-  --glow-pink: 0 0 18px rgba(255, 46, 151, 0.55);
-  --glow-cyan: 0 0 18px rgba(0, 229, 255, 0.55);
-  --gradient-sunset: linear-gradient(90deg, var(--pink), var(--purple), var(--cyan));
-  --gradient-border: linear-gradient(135deg, rgba(255, 46, 151, 0.7), rgba(139, 92, 246, 0.5), rgba(0, 229, 255, 0.7));
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --tabbar-h: 64px;
+}
+
+/* Light mode: same neon aerobics theme on a pale lavender base. Accents are
+   deepened so text stays AA; chips and primary buttons switch to white ink. */
+:root[data-theme="light"],
+:root[data-theme="system"]:not([data-theme="dark"]) {
+  --light-bg: #F7F3FF;
+  --light-surface: #FFFFFF;
+  --light-surface-2: #EBE3FF;
+  --light-pink: #C4006A;
+  --light-cyan: #006F8C;
+  --light-lime: #336400;
+  --light-purple: #6237CF;
+  --light-purple-light: #5B2FC4;
+  --light-yellow: #8A5E00;
+  --light-text: #1B1030;
+  --light-muted: #5B4C80;
+  --light-caution: #B71C1C;
+  --light-ink: #FFFFFF;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: var(--light-bg);
+  --surface: var(--light-surface);
+  --surface-2: var(--light-surface-2);
+  --pink: var(--light-pink);
+  --cyan: var(--light-cyan);
+  --lime: var(--light-lime);
+  --purple: var(--light-purple);
+  --purple-light: var(--light-purple-light);
+  --yellow: var(--light-yellow);
+  --text: var(--light-text);
+  --muted: var(--light-muted);
+  --caution: var(--light-caution);
+  --ink: var(--light-ink);
+  --tabbar-bg: rgba(247, 243, 255, 0.92);
+  --overlay: rgba(27, 16, 48, 0.55);
+  --grid-a: rgba(0, 111, 140, 0.10);
+  --grid-b: rgba(196, 0, 106, 0.10);
+  --glow-pink: 0 0 18px rgba(196, 0, 106, 0.30);
+  --glow-cyan: 0 0 18px rgba(0, 111, 140, 0.30);
+  --glow-text-pink: 0 0 18px rgba(196, 0, 106, 0.25);
+  --glow-text-cyan: 0 0 18px rgba(0, 111, 140, 0.25);
+  --glow-text-yellow: 0 0 18px rgba(138, 94, 0, 0.25);
+  --glow-text-lime: 0 0 18px rgba(63, 122, 0, 0.25);
+  --pose-glow: drop-shadow(0 0 5px rgba(0, 111, 140, 0.45));
+  --gradient-border: linear-gradient(135deg, rgba(196, 0, 106, 0.55), rgba(98, 55, 207, 0.45), rgba(0, 111, 140, 0.55));
+}
+
+@media (prefers-color-scheme: light) {
+  :root[data-theme="system"] {
+    color-scheme: light;
+    --bg: var(--light-bg);
+    --surface: var(--light-surface);
+    --surface-2: var(--light-surface-2);
+    --pink: var(--light-pink);
+    --cyan: var(--light-cyan);
+    --lime: var(--light-lime);
+    --purple: var(--light-purple);
+    --purple-light: var(--light-purple-light);
+    --yellow: var(--light-yellow);
+    --text: var(--light-text);
+    --muted: var(--light-muted);
+    --caution: var(--light-caution);
+    --ink: var(--light-ink);
+    --tabbar-bg: rgba(247, 243, 255, 0.92);
+    --overlay: rgba(27, 16, 48, 0.55);
+    --grid-a: rgba(0, 111, 140, 0.10);
+    --grid-b: rgba(196, 0, 106, 0.10);
+    --glow-pink: 0 0 18px rgba(196, 0, 106, 0.30);
+    --glow-cyan: 0 0 18px rgba(0, 111, 140, 0.30);
+    --glow-text-pink: 0 0 18px rgba(196, 0, 106, 0.25);
+    --glow-text-cyan: 0 0 18px rgba(0, 111, 140, 0.25);
+    --glow-text-yellow: 0 0 18px rgba(138, 94, 0, 0.25);
+    --glow-text-lime: 0 0 18px rgba(63, 122, 0, 0.25);
+    --pose-glow: drop-shadow(0 0 5px rgba(0, 111, 140, 0.45));
+    --gradient-border: linear-gradient(135deg, rgba(196, 0, 106, 0.55), rgba(98, 55, 207, 0.45), rgba(0, 111, 140, 0.55));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

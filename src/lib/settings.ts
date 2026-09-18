@@ -20,6 +20,8 @@ export const SettingsSchema = z.object({
   bellyCurve: z.boolean().default(true),
   /** Prenatal cool shower opted in (off by default). */
   prenatalCoolShower: z.boolean().default(false),
+  /** Appearance: dark (default), light, or follow the system. */
+  theme: z.enum(['dark', 'light', 'system']).default('dark'),
 });
 export type Settings = z.infer<typeof SettingsSchema>;
 
@@ -61,3 +63,17 @@ effect(() => {
   const s = settings.value;
   void import('./audio').then((a) => a.setAudio({ volume: s.volume, enabled: s.sound }));
 });
+
+// Apply the theme to <html> so every token switches; keep the browser chrome in step.
+const THEME_COLORS = { dark: '#140A26', light: '#F7F3FF' } as const;
+export function applyTheme(theme: Settings['theme']): void {
+  if (typeof document === 'undefined') return;
+  document.documentElement.setAttribute('data-theme', theme);
+  const light = theme === 'light' || (theme === 'system' && typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: light)').matches);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', light ? THEME_COLORS.light : THEME_COLORS.dark);
+  document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]')?.setAttribute('content', light ? 'default' : 'black-translucent');
+}
+effect(() => applyTheme(settings.value.theme));
+if (typeof matchMedia !== 'undefined') {
+  matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => applyTheme(settings.value.theme));
+}

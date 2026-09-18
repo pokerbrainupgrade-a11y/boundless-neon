@@ -13,9 +13,14 @@ export function contrast(a: string, b: string): number {
 }
 
 const css = readFileSync('src/styles/tokens.css', 'utf8');
-const token = (name: string) => css.match(new RegExp(`--${name}:\\s*(#[0-9A-Fa-f]{6})`))![1]!;
+const darkBlock = css.slice(0, css.indexOf('/* Light mode'));
+const lightBlock = css.slice(css.indexOf('/* Light mode'));
+const tokenIn = (block: string, prefix: string) => (name: string) => block.match(new RegExp(`--${prefix}${name}:\\s*(#[0-9A-Fa-f]{6})`))![1]!;
 
-describe('design tokens meet WCAG AA', () => {
+describe.each([
+  ['dark', tokenIn(darkBlock, '')],
+  ['light', tokenIn(lightBlock, 'light-')],
+])('%s design tokens meet WCAG AA', (_name, token) => {
   const bgs = ['bg', 'surface', 'surface-2'];
   it('body text on every background ≥ 4.5', () => {
     for (const bg of bgs) {
@@ -23,7 +28,7 @@ describe('design tokens meet WCAG AA', () => {
       expect(contrast(token('muted'), token(bg)), `muted on ${bg}`).toBeGreaterThanOrEqual(4.5);
     }
   });
-  it('accent text (links, timer states, caution) on dark backgrounds ≥ 4.5', () => {
+  it('accent text (links, timer states, caution) on backgrounds ≥ 4.5', () => {
     for (const bg of bgs) {
       for (const c of ['cyan', 'lime', 'yellow', 'caution', 'purple-light']) expect(contrast(token(c), token(bg)), `${c} on ${bg}`).toBeGreaterThanOrEqual(4.5);
       // pink is used for large display type only: ≥ 3 (AA large)

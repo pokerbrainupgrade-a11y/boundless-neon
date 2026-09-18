@@ -18,6 +18,7 @@ describe('gestational math', () => {
     expect(gestationalWeek(due, at(28, 0))).toBe(28);
     expect(trimester(due, at(28, 0))).toBe('T3');
     expect(trimesterForWeek(0)).toBe('T1');
+    expect(gestationalWeek(due, addDays(due, -400))).toBe(0);
     expect(trimesterForWeek(40)).toBe('T3');
   });
 

@@ -105,6 +105,18 @@ export function Settings() {
         </div>
       </section>
 
+      <section class="card stack" data-testid="appearance">
+        <h3>APPEARANCE</h3>
+        <div class="row" role="radiogroup" aria-label="Theme">
+          {(['dark', 'light', 'system'] as const).map((t) => (
+            <button key={t} type="button" role="radio" aria-checked={s.theme === t} class={`btn grow ${s.theme === t ? 'btn-primary' : ''}`} data-testid={`theme-${t}`} onClick={() => updateSettings({ theme: t })}>
+              {t === 'dark' ? 'Dark' : t === 'light' ? 'Light' : 'Auto'}
+            </button>
+          ))}
+        </div>
+        <div class="muted small">Same neon look on a deep night or a pale lavender base. Auto follows the iPhone setting.</div>
+      </section>
+
       <section class="card stack">
         <h3>CUES</h3>
         <label class="switch"><span>Sound</span><input type="checkbox" checked={s.sound} onChange={(e) => updateSettings({ sound: (e.target as HTMLInputElement).checked })} /></label>

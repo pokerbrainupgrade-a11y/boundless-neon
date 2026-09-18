@@ -8,7 +8,7 @@ const RANK: Record<Trimester, number> = { T1: 1, T2: 2, T3: 3 };
 /** gestational week = 40 − ceil((dueDate − today) / 7 days) */
 export function gestationalWeek(dueDate: string, today: string): number {
   const daysLeft = daysBetween(today, dueDate);
-  return 40 - Math.ceil(daysLeft / 7);
+  return Math.max(0, 40 - Math.ceil(daysLeft / 7));
 }
 
 export function trimesterForWeek(week: number): Trimester {
